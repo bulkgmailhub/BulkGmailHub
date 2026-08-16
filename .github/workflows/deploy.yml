@@ -36,6 +36,11 @@ jobs:
       - name: Build application
         run: npm run build
 
+      - name: Ensure CNAME and .nojekyll in dist
+        run: |
+          echo "bulkgmailhub.com" > ./dist/CNAME
+          touch ./dist/.nojekyll
+
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
