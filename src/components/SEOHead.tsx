@@ -27,12 +27,12 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
         seoTitle: `${currentService.title} | Bulk Verified Accounts | BulkGmailHub`,
         metaDescription: currentService.shortDescription,
         h1: currentService.title,
-        canonicalUrl: `https://bulkgmailhub.com/#service/${currentService.slug}`,
+        canonicalUrl: `https://bulkgmailhub.com/service/${currentService.slug}`,
         semanticTerms: currentService.features,
         breadcrumbs: [
           { name: 'Home', url: 'https://bulkgmailhub.com/' },
-          { name: 'Shop', url: 'https://bulkgmailhub.com/#shop' },
-          { name: currentService.title, url: `https://bulkgmailhub.com/#service/${currentService.slug}` },
+          { name: 'Shop', url: 'https://bulkgmailhub.com/shop' },
+          { name: currentService.title, url: `https://bulkgmailhub.com/service/${currentService.slug}` },
         ],
         schemaType: 'Service',
         clusterCategory: 'gmail',
@@ -49,12 +49,12 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
         seoTitle: `${currentBlog.title} | BulkGmailHub Guides`,
         metaDescription: currentBlog.excerpt,
         h1: currentBlog.title,
-        canonicalUrl: `https://bulkgmailhub.com/#blog/${currentBlog.slug}`,
+        canonicalUrl: `https://bulkgmailhub.com/blog/${currentBlog.slug}`,
         semanticTerms: currentBlog.tags,
         breadcrumbs: [
           { name: 'Home', url: 'https://bulkgmailhub.com/' },
-          { name: 'Blog', url: 'https://bulkgmailhub.com/#blog' },
-          { name: currentBlog.title, url: `https://bulkgmailhub.com/#blog/${currentBlog.slug}` },
+          { name: 'Blog', url: 'https://bulkgmailhub.com/blog' },
+          { name: currentBlog.title, url: `https://bulkgmailhub.com/blog/${currentBlog.slug}` },
         ],
         schemaType: 'Article',
         clusterCategory: 'blog',
@@ -147,7 +147,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
         '@type': 'SearchAction',
         target: {
           '@type': 'EntryPoint',
-          urlTemplate: 'https://bulkgmailhub.com/#shop?q={search_term_string}',
+          urlTemplate: 'https://bulkgmailhub.com/shop?q={search_term_string}',
         },
         'query-input': 'required name=search_term_string',
       },
@@ -185,7 +185,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
         sku: `BGH-${currentService.id.toUpperCase()}`,
         offers: {
           '@type': 'AggregateOffer',
-          url: `https://bulkgmailhub.com/#service/${currentService.slug}`,
+          url: `https://bulkgmailhub.com/service/${currentService.slug}`,
           priceCurrency: 'USD',
           lowPrice: minPrice.toFixed(2),
           highPrice: maxPrice.toFixed(2),
@@ -280,7 +280,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
         },
         mainEntityOfPage: {
           '@type': 'WebPage',
-          '@id': `https://bulkgmailhub.com/#blog/${currentBlog.slug}`,
+          '@id': `https://bulkgmailhub.com/blog/${currentBlog.slug}`,
         },
       });
     }

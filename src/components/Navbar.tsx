@@ -15,23 +15,27 @@ import {
   ArrowRight, 
   Sparkles 
 } from 'lucide-react';
-import { ServiceItem } from '../types';
+import { ServiceItem, CartItem } from '../types';
 import { SERVICES_DATA } from '../data/servicesData';
 import { CONTACT_INFO } from '../data/cryptoData';
 import { ServiceBrandLogo } from './ServiceIcons';
 
 interface NavbarProps {
   currentView: string;
+  currentServiceSlug?: string;
   onNavigate: (view: string, serviceSlug?: string) => void;
-  cartCount: number;
+  cartItems?: CartItem[];
+  cartCount?: number;
   onOpenCart: () => void;
   onOpenOrderTracker: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   currentView,
+  currentServiceSlug,
   onNavigate,
-  cartCount,
+  cartCount = 0,
+  cartItems,
   onOpenCart,
   onOpenOrderTracker,
 }) => {
@@ -163,7 +167,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 onClick={() => setIsGmailOpen(!isGmailOpen)}
                 className={`px-3.5 py-2 rounded-xl text-sm font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                  isGmailOpen || (currentView === 'service-detail' && gmailServices.some(s => s.slug === window.location.hash.replace('#service/', '')))
+                  isGmailOpen || (currentView === 'service-detail' && gmailServices.some(s => s.slug === currentServiceSlug))
                     ? 'text-red-600 bg-red-50/90 shadow-2xs'
                     : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100/70'
                 }`}
@@ -269,7 +273,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 onClick={() => setIsOtherMailsOpen(!isOtherMailsOpen)}
                 className={`px-3.5 py-2 rounded-xl text-sm font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
-                  isOtherMailsOpen || (currentView === 'service-detail' && otherMailsServices.some(s => s.slug === window.location.hash.replace('#service/', '')))
+                  isOtherMailsOpen || (currentView === 'service-detail' && otherMailsServices.some(s => s.slug === currentServiceSlug))
                     ? 'text-blue-600 bg-blue-50/90 shadow-2xs'
                     : 'text-slate-700 hover:text-slate-950 hover:bg-slate-100/70'
                 }`}

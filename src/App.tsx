@@ -41,12 +41,37 @@ export default function App() {
     }
   }, [cartItems]);
 
-  // Handle URL hash changes for easy direct linking
+  // Handle URL path changes and legacy hash redirection
   useEffect(() => {
-    const handleHash = () => {
-      const hash = window.location.hash.replace('#', '');
-      if (hash.startsWith('service/')) {
-        const slug = hash.replace('service/', '');
+    const parseLocation = () => {
+      const pathname = window.location.pathname;
+      const hash = window.location.hash.replace(/^#\/?/, '');
+
+      // 1. If user arrives via legacy hash (e.g. #service/slug or #shop), seamlessly convert to clean URL
+      if (hash) {
+        if (hash.startsWith('service/')) {
+          const slug = hash.replace('service/', '');
+          const exists = SERVICES_DATA.some(s => s.slug === slug);
+          if (exists) {
+            window.history.replaceState(null, '', `/service/${slug}`);
+            setCurrentView('service-detail');
+            setCurrentServiceSlug(slug);
+            return;
+          }
+        }
+        if (['home', 'shop', 'about', 'blog', 'contact'].includes(hash)) {
+          const targetUrl = hash === 'home' ? '/' : `/${hash}`;
+          window.history.replaceState(null, '', targetUrl);
+          setCurrentView(hash);
+          return;
+        }
+      }
+
+      // 2. Clean pathname matching (e.g. /service/buy-fresh-hotmail-outlook-accounts, /shop, /blog, etc.)
+      const cleanPath = pathname.replace(/\/$/, '') || '/';
+
+      if (cleanPath.startsWith('/service/')) {
+        const slug = cleanPath.replace('/service/', '');
         const exists = SERVICES_DATA.some(s => s.slug === slug);
         if (exists) {
           setCurrentView('service-detail');
@@ -54,27 +79,55 @@ export default function App() {
           return;
         }
       }
-      if (['home', 'shop', 'about', 'blog', 'contact'].includes(hash)) {
-        setCurrentView(hash);
+
+      if (cleanPath === '/shop') {
+        setCurrentView('shop');
+        return;
       }
+      if (cleanPath === '/about') {
+        setCurrentView('about');
+        return;
+      }
+      if (cleanPath === '/blog' || cleanPath.startsWith('/blog/')) {
+        setCurrentView('blog');
+        return;
+      }
+      if (cleanPath === '/contact') {
+        setCurrentView('contact');
+        return;
+      }
+
+      // Default home
+      setCurrentView('home');
     };
 
-    handleHash();
-    window.addEventListener('hashchange', handleHash);
-    return () => window.removeEventListener('hashchange', handleHash);
+    parseLocation();
+    window.addEventListener('popstate', parseLocation);
+    window.addEventListener('hashchange', parseLocation);
+    return () => {
+      window.removeEventListener('popstate', parseLocation);
+      window.removeEventListener('hashchange', parseLocation);
+    };
   }, []);
 
   const handleNavigate = (view: string, serviceSlug?: string) => {
     if (view === 'service-detail' && serviceSlug) {
       setCurrentView('service-detail');
       setCurrentServiceSlug(serviceSlug);
-      window.location.hash = `service/${serviceSlug}`;
+      window.history.pushState(null, '', `/service/${serviceSlug}`);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (view === 'home') {
+      setCurrentView('home');
+      window.history.pushState(null, '', '/');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
 
     setCurrentView(view);
-    window.location.hash = view;
+    window.history.pushState(null, '', `/${view}`);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -155,8 +208,10 @@ export default function App() {
       {/* Top Navigation */}
       <Navbar
         currentView={currentView}
+        currentServiceSlug={currentServiceSlug}
         onNavigate={handleNavigate}
         cartItems={cartItems}
+        cartCount={cartItems.length}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenOrderTracker={() => setIsOrderTrackerOpen(true)}
       />
