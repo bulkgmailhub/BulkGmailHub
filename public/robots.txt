@@ -1,0 +1,12 @@
+# robots.txt for BulkGmailHub.com
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /tracker
+Disallow: /*?*checkout=*
+
+# Crawl delay
+Crawl-delay: 1
+
+# XML Sitemaps
+Sitemap: https://bulkgmailhub.com/sitemap.xml

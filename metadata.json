@@ -1,0 +1,6 @@
+{
+  "name": "BulkGmailHub - Premium Bulk Email Accounts Store",
+  "description": "Premier marketplace to buy verified USA Gmail, Aged Gmail (2000-2024), PVA, App Password ready, Yahoo, Hotmail, Aol, iCloud, and EDU email accounts with instant crypto checkout and 24/7 support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
