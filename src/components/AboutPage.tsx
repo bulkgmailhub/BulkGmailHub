@@ -67,7 +67,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               <div className="w-9 h-9 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold">
                 <Globe className="w-5 h-5" />
               </div>
-              <h4 className="font-heading font-bold text-base text-slate-900">Residential Connections</h4>
+              <h3 className="font-heading font-bold text-base text-slate-900">Residential Connections</h3>
               <p className="text-xs text-slate-500 leading-relaxed">
                 Accounts are registered through genuine residential IP networks rather than shared datacenters.
               </p>
@@ -77,7 +77,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold">
                 <Server className="w-5 h-5" />
               </div>
-              <h4 className="font-heading font-bold text-base text-slate-900">App Passwords & SMTP</h4>
+              <h3 className="font-heading font-bold text-base text-slate-900">App Passwords & SMTP</h3>
               <p className="text-xs text-slate-500 leading-relaxed">
                 Pre-configured 16-character passcodes ready for cold email platforms and developer code.
               </p>
@@ -87,7 +87,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold">
                 <ShieldCheck className="w-5 h-5" />
               </div>
-              <h4 className="font-heading font-bold text-base text-slate-900">72-Hour Warranty</h4>
+              <h3 className="font-heading font-bold text-base text-slate-900">72-Hour Warranty</h3>
               <p className="text-xs text-slate-500 leading-relaxed">
                 If an account fails to log in upon delivery, we replace it promptly via Telegram or WhatsApp.
               </p>
@@ -102,7 +102,7 @@ export const AboutPage: React.FC<AboutPageProps> = ({ onNavigate }) => {
               <ShieldCheck className="w-7 h-7" />
             </div>
             <div>
-              <h3 className="text-xl font-heading font-extrabold">Our 72-Hour Free Replacement Policy</h3>
+              <h2 className="text-xl font-heading font-extrabold">Our 72-Hour Free Replacement Policy</h2>
               <p className="text-xs text-slate-400">Clear and straightforward coverage for every order</p>
             </div>
           </div>

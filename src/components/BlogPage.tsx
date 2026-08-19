@@ -180,7 +180,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         <button
                           onClick={() => {
                             setSelectedPost(null);
-                            onNavigate('service-detail', 'aged-gmail-app-passwords');
+                            onNavigate('service-detail', 'buy-aged-gmail-accounts-with-app-password');
                           }}
                           className="text-xs font-bold text-slate-800 hover:text-blue-700 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs transition-colors flex items-center gap-1 cursor-pointer"
                         >
@@ -190,7 +190,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         <button
                           onClick={() => {
                             setSelectedPost(null);
-                            onNavigate('service-detail', 'usa-aged-gmail-2000-2016');
+                            onNavigate('service-detail', 'buy-vintage-aged-gmail-accounts-2000-2016');
                           }}
                           className="text-xs font-bold text-slate-800 hover:text-blue-700 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs transition-colors flex items-center gap-1 cursor-pointer"
                         >
@@ -204,21 +204,21 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         <button
                           onClick={() => {
                             setSelectedPost(null);
-                            onNavigate('service-detail', 'fresh-usa-pva-gmail');
+                            onNavigate('service-detail', 'buy-phone-verified-pva-gmail-accounts');
                           }}
                           className="text-xs font-bold text-slate-800 hover:text-blue-700 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs transition-colors flex items-center gap-1 cursor-pointer"
                         >
-                          <span>Fresh USA PVA Gmail (Physical SIM)</span>
+                          <span>Phone Verified (PVA) Gmail Accounts</span>
                           <ArrowRight className="w-3 h-3 text-blue-600" />
                         </button>
                         <button
                           onClick={() => {
                             setSelectedPost(null);
-                            onNavigate('service-detail', 'iphone-created-gmail');
+                            onNavigate('service-detail', 'buy-usa-gmail-accounts');
                           }}
                           className="text-xs font-bold text-slate-800 hover:text-blue-700 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs transition-colors flex items-center gap-1 cursor-pointer"
                         >
-                          <span>iPhone iOS Created Gmail</span>
+                          <span>USA Residential IP Gmail</span>
                           <ArrowRight className="w-3 h-3 text-blue-600" />
                         </button>
                       </>
@@ -228,7 +228,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         <button
                           onClick={() => {
                             setSelectedPost(null);
-                            onNavigate('service-detail', 'aged-gmail-app-passwords');
+                            onNavigate('service-detail', 'buy-aged-gmail-accounts-with-app-password');
                           }}
                           className="text-xs font-bold text-slate-800 hover:text-blue-700 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs transition-colors flex items-center gap-1 cursor-pointer"
                         >
@@ -238,7 +238,7 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         <button
                           onClick={() => {
                             setSelectedPost(null);
-                            onNavigate('service-detail', 'aged-hotmail-outlook');
+                            onNavigate('service-detail', 'buy-aged-hotmail-outlook-accounts');
                           }}
                           className="text-xs font-bold text-slate-800 hover:text-blue-700 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs transition-colors flex items-center gap-1 cursor-pointer"
                         >
@@ -252,17 +252,17 @@ export const BlogPage: React.FC<BlogPageProps> = ({ onNavigate }) => {
                         <button
                           onClick={() => {
                             setSelectedPost(null);
-                            onNavigate('service-detail', 'edu-email-accounts');
+                            onNavigate('service-detail', 'buy-usa-edu-email-accounts-student-perks');
                           }}
                           className="text-xs font-bold text-slate-800 hover:text-blue-700 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs transition-colors flex items-center gap-1 cursor-pointer"
                         >
-                          <span>Active .EDU Student Email Accounts</span>
+                          <span>USA .EDU Student Email Accounts</span>
                           <ArrowRight className="w-3 h-3 text-blue-600" />
                         </button>
                         <button
                           onClick={() => {
                             setSelectedPost(null);
-                            onNavigate('service-detail', 'github-student-pack-edu');
+                            onNavigate('service-detail', 'buy-github-student-pack-edu-emails');
                           }}
                           className="text-xs font-bold text-slate-800 hover:text-blue-700 bg-white border border-slate-200 px-3 py-1.5 rounded-xl shadow-2xs transition-colors flex items-center gap-1 cursor-pointer"
                         >

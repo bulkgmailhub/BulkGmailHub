@@ -34,13 +34,13 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
           { name: 'Shop', url: 'https://bulkgmailhub.com/shop' },
           { name: currentService.title, url: `https://bulkgmailhub.com/service/${currentService.slug}` },
         ],
-        schemaType: 'Service',
+        schemaType: 'Product',
         clusterCategory: 'gmail',
         internalLinks: [],
         cta: { primaryText: 'Buy Now', secondaryText: 'View Tiers', targetAction: 'buy' },
       };
     } else if (currentView === 'blog' && currentBlog) {
-      seoConfig = {
+      seoConfig = SEO_PAGE_REGISTRY[currentBlog.slug] || {
         slug: currentBlog.slug,
         view: 'blog',
         primaryKeyword: currentBlog.title,
@@ -63,7 +63,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
       };
     }
 
-    // 1. Update Title
+    // 1. Update Document Title
     document.title = seoConfig.seoTitle;
 
     // Helper to safely set or create meta tag
@@ -91,7 +91,10 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
 
     // 2. Set Core Meta Tags
     setMetaTag('description', seoConfig.metaDescription);
-    setMetaTag('keywords', [seoConfig.primaryKeyword, ...seoConfig.secondaryKeywords, ...seoConfig.semanticTerms].slice(0, 10).join(', '));
+    setMetaTag(
+      'keywords',
+      [seoConfig.primaryKeyword, ...seoConfig.secondaryKeywords, ...seoConfig.semanticTerms].slice(0, 12).join(', ')
+    );
     setMetaTag('robots', 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1');
     setLinkTag('canonical', seoConfig.canonicalUrl);
 
@@ -213,10 +216,10 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
           '@type': 'FAQPage',
           mainEntity: currentService.faqs.map(faq => ({
             '@type': 'Question',
-            name: faq.q,
+            name: faq.question || (faq as any).q,
             acceptedAnswer: {
               '@type': 'Answer',
-              text: faq.a,
+              text: faq.answer || (faq as any).a,
             },
           })),
         });
@@ -242,7 +245,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
             name: 'Which cryptocurrencies can I pay with?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'We accept USDT (TRC-20), Bitcoin (BTC), Litecoin (LTC), Ethereum (ETH), and Solana (SOL) with zero hidden merchant fees.',
+              text: 'We accept USDT (TRC-20 and ERC-20), Bitcoin (BTC), Litecoin (LTC), Ethereum (ETH), Solana (SOL), Binance Coin (BNB), and Tron (TRX) with zero hidden fees.',
             },
           },
           {
@@ -250,7 +253,15 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
             name: 'How does the 72-hour replacement warranty work?',
             acceptedAnswer: {
               '@type': 'Answer',
-              text: 'If any account in your order experiences a login checkpoint or invalid credential issue during the first 72 hours, we will replace it free of charge via Telegram or WhatsApp support.',
+              text: 'If any account in your order experiences a login checkpoint or invalid credential issue during the first 72 hours, we replace it free of charge via Telegram or WhatsApp support.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'Are these accounts safe for cold outreach platforms like Smartlead and Instantly?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Yes. Our aged Gmail accounts with 16-digit App Passwords connect directly to Smartlead, Instantly, and SMTP scripts with established sender trust baselines.',
             },
           },
         ],
@@ -265,7 +276,7 @@ export const SEOHead: React.FC<SEOHeadProps> = ({
         headline: currentBlog.title,
         description: currentBlog.excerpt,
         datePublished: '2026-08-12T00:00:00Z',
-        dateModified: '2026-08-16T00:00:00Z',
+        dateModified: '2026-08-19T00:00:00Z',
         author: {
           '@type': 'Person',
           name: currentBlog.author,
