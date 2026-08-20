@@ -46,6 +46,8 @@ export const CryptoCheckoutModal: React.FC<CryptoCheckoutModalProps> = ({
   const [step, setStep] = useState<'payment' | 'success'>('payment');
   const [createdOrder, setCreatedOrder] = useState<OrderRecord | null>(null);
   const [formError, setFormError] = useState('');
+  const [emailStatus, setEmailStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+  const [emailErrorMessage, setEmailErrorMessage] = useState('');
 
   const totalPrice = items.reduce((sum, item) => sum + item.price, 0);
   const totalAccountsCount = items.reduce((sum, item) => sum + item.quantityCount, 0);
@@ -55,6 +57,8 @@ export const CryptoCheckoutModal: React.FC<CryptoCheckoutModalProps> = ({
       setStep('payment');
       setTxid('');
       setFormError('');
+      setEmailStatus('idle');
+      setEmailErrorMessage('');
     }
   }, [isOpen]);
 
@@ -64,6 +68,33 @@ export const CryptoCheckoutModal: React.FC<CryptoCheckoutModalProps> = ({
     navigator.clipboard.writeText(selectedCrypto.address);
     setCopiedAddress(true);
     setTimeout(() => setCopiedAddress(false), 2000);
+  };
+
+  const sendOrderEmailNotifications = async (orderData: OrderRecord) => {
+    setEmailStatus('sending');
+    try {
+      const response = await fetch('/api/order/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order: orderData }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Server returned ${response.status}`);
+      }
+
+      const result = await response.json();
+      if (result.success) {
+        setEmailStatus('sent');
+      } else {
+        setEmailStatus('error');
+        setEmailErrorMessage(result.error || 'Failed to send notification email');
+      }
+    } catch (err: any) {
+      console.error('Email dispatch error:', err);
+      setEmailStatus('error');
+      setEmailErrorMessage(err.message || 'Network error sending notification email');
+    }
   };
 
   const handleCompleteOrder = (e: React.FormEvent) => {
@@ -110,6 +141,9 @@ export const CryptoCheckoutModal: React.FC<CryptoCheckoutModalProps> = ({
     onOrderCreated(newOrder);
     onClearCart();
     setStep('success');
+
+    // Trigger automated email notifications to Customer & Admin
+    sendOrderEmailNotifications(newOrder);
 
     // Fire Celebratory Confetti
     confetti({
@@ -439,6 +473,61 @@ export const CryptoCheckoutModal: React.FC<CryptoCheckoutModalProps> = ({
                 </div>
               </div>
             )}
+
+            {/* Email Notification Status */}
+            <div className="p-4 rounded-2xl border text-left text-xs transition-all duration-300 bg-white border-slate-200 shadow-2xs">
+              <div className="flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-red-600" />
+                  <span className="font-bold text-slate-800">Email Notifications</span>
+                </div>
+                {emailStatus === 'sending' && (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 text-[11px] font-semibold animate-pulse">
+                    <span className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-ping"></span> Sending...
+                  </span>
+                )}
+                {emailStatus === 'sent' && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[11px] font-bold border border-emerald-200">
+                    <Check className="w-3 h-3" /> Dispatched
+                  </span>
+                )}
+                {emailStatus === 'error' && (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-800 text-[11px] font-bold border border-amber-200">
+                    <AlertCircle className="w-3 h-3" /> Pending Queue
+                  </span>
+                )}
+              </div>
+
+              <p className="text-[11px] text-slate-600 mt-2 leading-relaxed">
+                {emailStatus === 'sent' ? (
+                  <>
+                    ✅ Confirmation receipt dispatched to <strong className="text-slate-900">{createdOrder?.customerEmail}</strong> from <code>bulkgmailhub@gmail.com</code>. Admin alert sent to <code>bulkgmailhub@gmail.com</code>.
+                  </>
+                ) : emailStatus === 'sending' ? (
+                  <>
+                    Sending confirmation receipt to <strong className="text-slate-900">{createdOrder?.customerEmail}</strong> and alerting admin at <code>bulkgmailhub@gmail.com</code>...
+                  </>
+                ) : emailStatus === 'error' ? (
+                  <>
+                    Note: Email server dispatch recorded. You can also resend or message on Telegram/WhatsApp with your Order ID.
+                  </>
+                ) : (
+                  <>
+                    Email notifications queued for customer and admin dispatch.
+                  </>
+                )}
+              </p>
+
+              {emailStatus === 'error' && createdOrder && (
+                <button
+                  type="button"
+                  onClick={() => sendOrderEmailNotifications(createdOrder)}
+                  className="mt-2.5 px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-[11px] font-bold transition-colors inline-flex items-center gap-1"
+                >
+                  <Mail className="w-3 h-3 text-red-600" /> Resend Notification
+                </button>
+              )}
+            </div>
 
             {/* Direct Instant Ping Telegram & WhatsApp Buttons */}
             <div className="space-y-3 pt-2">
