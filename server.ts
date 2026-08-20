@@ -13,16 +13,22 @@ const PORT = 3000;
 // Enable JSON body parser
 app.use(express.json());
 
-// Gmail SMTP Transporter
+// Gmail SMTP Transporter (Port 465 with SSL for high reliability)
 const getTransporter = () => {
-  const user = process.env.GMAIL_USER || 'bulkgmailhub@gmail.com';
-  const pass = (process.env.GMAIL_APP_PASSWORD || 'frkv usud tdyx xzrm').replace(/\s+/g, '');
+  const user = (process.env.GMAIL_USER || 'bulkgmailhub@gmail.com').trim();
+  const rawPass = process.env.GMAIL_APP_PASSWORD || 'frkv usud tdyx xzrm';
+  const pass = rawPass.replace(/\s+/g, '').trim();
 
   return nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
       user,
       pass,
+    },
+    tls: {
+      rejectUnauthorized: false,
     },
   });
 };
@@ -30,6 +36,44 @@ const getTransporter = () => {
 // API Health Check
 app.get('/api/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// API Endpoint to test Gmail SMTP delivery
+app.get('/api/test-email', async (req: Request, res: Response) => {
+  try {
+    const targetEmail = (req.query.email as string) || 'bulkgmailhub@gmail.com';
+    const transporter = getTransporter();
+
+    const info = await transporter.sendMail({
+      from: `"BulkGmailHub System" <bulkgmailhub@gmail.com>`,
+      to: targetEmail,
+      subject: `🧪 Test Notification from BulkGmailHub - ${new Date().toLocaleTimeString()}`,
+      html: `
+        <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; padding: 24px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; max-width: 500px; margin: 0 auto;">
+          <h2 style="color: #dc2626; margin-top: 0;">BulkGmailHub SMTP Connection Verified!</h2>
+          <p style="color: #334155; font-size: 14px;">This test email confirms that your Gmail App Password and SMTP delivery system are actively operational.</p>
+          <ul style="color: #475569; font-size: 13px; line-height: 1.6;">
+            <li><strong>Sender:</strong> bulkgmailhub@gmail.com</li>
+            <li><strong>Recipient:</strong> ${targetEmail}</li>
+            <li><strong>Timestamp:</strong> ${new Date().toUTCString()}</li>
+          </ul>
+        </div>
+      `,
+    });
+
+    return res.json({
+      success: true,
+      message: `Test email successfully sent to ${targetEmail}`,
+      messageId: info.messageId,
+      response: info.response,
+    });
+  } catch (error: any) {
+    console.error('Test email failed:', error);
+    return res.status(500).json({
+      success: false,
+      error: error.message || 'Failed to send test email',
+    });
+  }
 });
 
 // API Endpoint to send order notification emails to both Customer & Admin
@@ -42,12 +86,12 @@ app.post('/api/order/notify', async (req: Request, res: Response) => {
     }
 
     const transporter = getTransporter();
-    const adminEmail = process.env.GMAIL_USER || 'bulkgmailhub@gmail.com';
+    const adminEmail = (process.env.GMAIL_USER || 'bulkgmailhub@gmail.com').trim();
 
     // Format items list for HTML
     const itemsHtml = (order.items || [])
       .map(
-        (item: any, idx: number) => `
+        (item: any) => `
         <tr style="border-bottom: 1px solid #e2e8f0;">
           <td style="padding: 12px 16px; font-weight: 600; color: #0f172a;">
             ${item.serviceTitle || item.title || 'Email Accounts Package'}
@@ -170,10 +214,10 @@ app.post('/api/order/notify', async (req: Request, res: Response) => {
               <!-- Delivery & Warranty Notice -->
               <div style="background-color: #eff6ff; border-left: 4px solid #3b82f6; padding: 14px 16px; border-radius: 0 8px 8px 0; margin-bottom: 24px;">
                 <p style="margin: 0; font-size: 13px; color: #1e40af; line-height: 1.5;">
-                  <strong>⚡ Estimated Delivery:</strong> 5 to 15 minutes after blockchain confirmation. Your account list format will be <code>Email:Password:Recovery:AppPassword</code>.
+                  <strong>⚡ Estimated Delivery:</strong> 5 to 15 minutes after blockchain confirmation. Your account credentials will be formatted as <code>Email:Password:Recovery:AppPassword</code>.
                 </p>
                 <p style="margin: 6px 0 0 0; font-size: 12px; color: #3b82f6;">
-                  <strong>🛡️ 72-Hour Warranty:</strong> All accounts include free replacement for any login or initial verification issues.
+                  <strong>🛡️ 72-Hour Warranty:</strong> All accounts include free replacement for any initial login or password checkpoint issues.
                 </p>
               </div>
 
@@ -351,19 +395,26 @@ app.post('/api/order/notify', async (req: Request, res: Response) => {
     const isCustomerSent = customerResult.status === 'fulfilled';
     const isAdminSent = adminResult.status === 'fulfilled';
 
+    let customerError = null;
+    let adminError = null;
+
     if (!isCustomerSent) {
-      console.error('Failed to send customer notification email:', (customerResult as PromiseRejectedResult).reason);
+      customerError = (customerResult as PromiseRejectedResult).reason?.message || 'Failed to send customer email';
+      console.error('Failed to send customer notification email:', customerError);
     }
     if (!isAdminSent) {
-      console.error('Failed to send admin notification email:', (adminResult as PromiseRejectedResult).reason);
+      adminError = (adminResult as PromiseRejectedResult).reason?.message || 'Failed to send admin email';
+      console.error('Failed to send admin notification email:', adminError);
     }
 
     return res.json({
-      success: true,
+      success: isCustomerSent || isAdminSent,
       orderId: order.orderId,
       notifications: {
         customerEmail: isCustomerSent ? 'sent' : 'failed',
+        customerError,
         adminEmail: isAdminSent ? 'sent' : 'failed',
+        adminError,
       },
     });
   } catch (error: any) {

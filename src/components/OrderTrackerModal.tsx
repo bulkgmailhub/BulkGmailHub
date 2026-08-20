@@ -139,6 +139,40 @@ export const OrderTrackerModal: React.FC<OrderTrackerModalProps> = ({ isOpen, on
                   </div>
                 </div>
 
+                {/* Email Resend Trigger */}
+                <div className="pt-2 border-t border-slate-200 flex items-center justify-between">
+                  <span className="text-[11px] text-slate-500">Need another copy of your receipt?</span>
+                  <button
+                    onClick={async (e) => {
+                      const btn = e.currentTarget;
+                      btn.disabled = true;
+                      btn.textContent = 'Sending...';
+                      try {
+                        const res = await fetch('/api/order/notify', {
+                          method: 'POST',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ order: searchedOrder }),
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                          btn.textContent = 'Email Sent!';
+                        } else {
+                          btn.textContent = 'Error: Check Telegram';
+                        }
+                      } catch {
+                        btn.textContent = 'Error sending';
+                      }
+                      setTimeout(() => {
+                        btn.disabled = false;
+                        btn.textContent = 'Resend Receipt Email';
+                      }, 4000);
+                    }}
+                    className="px-3 py-1 bg-white hover:bg-slate-100 border border-slate-300 rounded-lg text-[11px] font-bold text-slate-800 transition-colors shadow-2xs"
+                  >
+                    Resend Receipt Email
+                  </button>
+                </div>
+
                 <div className="pt-2 border-t border-slate-200">
                   <span className="text-slate-400 block text-[11px] mb-1">Purchased Packages:</span>
                   <div className="space-y-1">
